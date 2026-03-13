@@ -2,14 +2,28 @@
 <html>
 <head>
 <title>DSC ADDA</title>
+
 <style>
+
 body{
 font-family:Arial;
 background:#0f2027;
 color:white;
 text-align:center;
-padding:50px;
+margin:0;
 }
+
+header{
+background:#ff7a18;
+padding:20px;
+font-size:30px;
+font-weight:bold;
+}
+
+.container{
+padding:40px;
+}
+
 button{
 padding:15px 30px;
 margin:10px;
@@ -20,18 +34,84 @@ background:#ff7a18;
 color:white;
 cursor:pointer;
 }
+
+button:hover{
+background:#ffa500;
+}
+
+.card{
+background:#203a43;
+padding:20px;
+margin:20px;
+border-radius:10px;
+}
+
 </style>
+
 </head>
 
 <body>
 
-<h1>🔥 DSC ADDA</h1>
-<p>Best Platform for DSC Preparation</p>
+<header>
+🔥 DSC ADDA
+</header>
 
-<button>Mock Tests</button>
-<button>Materials</button>
-<button>Shorts</button>
-<button>Admin</button>
+<div class="container">
+
+<h2>Best Platform for DSC Preparation</h2>
+
+<button onclick="showTests()">Mock Tests</button>
+<button onclick="showMaterials()">Materials</button>
+<button onclick="joinTelegram()">Join Telegram</button>
+
+<div id="content"></div>
+
+</div>
+
+<script>
+
+function showTests(){
+
+document.getElementById("content").innerHTML = `
+<div class="card">
+<h3>Practice Test</h3>
+
+<p>Q1. Andhra Pradesh Capital?</p>
+
+<button onclick="alert('Wrong')">Kurnool</button>
+<button onclick="alert('Correct')">Amaravati</button>
+<button onclick="alert('Wrong')">Guntur</button>
+
+</div>
+`;
+
+}
+
+function showMaterials(){
+
+document.getElementById("content").innerHTML = `
+<div class="card">
+
+<h3>Study Materials</h3>
+
+<p>Download Notes</p>
+
+<a href="#" target="_blank">
+<button>Download PDF</button>
+</a>
+
+</div>
+`;
+
+}
+
+function joinTelegram(){
+
+window.open("https://t.me/yourgroup");
+
+}
+
+</script>
 
 </body>
 </html>
