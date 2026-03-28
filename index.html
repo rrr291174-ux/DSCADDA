@@ -1,223 +1,1092 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="te">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-<title>DSC ADDA - Best Study Platform</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--bg:#0a0e1a;--card:#131832;--card2:#1a2040;--cyan:#00e5ff;--pink:#ff2d75;--purple:#a855f7;--orange:#ff8c00;--green:#00c853;--red:#ff1744;--yellow:#ffd600;--text:#e0e6ff;--text2:#8892b0;--glass:rgba(19,24,50,0.85)}
-body{font-family:'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;padding-bottom:70px}
-body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 20% 50%,rgba(0,229,255,0.05) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(168,85,247,0.05) 0%,transparent 50%),radial-gradient(ellipse at 50% 80%,rgba(255,45,117,0.03) 0%,transparent 50%);pointer-events:none;z-index:0}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DSCADDA Exam System Pro</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700;800;900&display=swap');
+        body { 
+            font-family: 'Noto Sans Telugu', sans-serif; 
+            background-color: #f8fafc; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Dark Theme Front Page Background */
+        .space-bg {
+            background: radial-gradient(circle at 50% 0%, #1a103c 0%, #05010f 80%);
+            background-image: 
+                radial-gradient(circle at 50% 0%, #1a103c 0%, #05010f 80%),
+                url('data:image/svg+xml,%3Csvg width="400" height="400" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noise"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noise)" opacity="0.05"/%3E%3C/svg%3E');
+        }
 
-.page{display:none;position:relative;z-index:1;min-height:calc(100vh - 70px);animation:fadeIn .3s ease}
-.page.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-@keyframes glow{0%,100%{box-shadow:0 0 5px rgba(0,229,255,0.3)}50%{box-shadow:0 0 20px rgba(0,229,255,0.6)}}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
-@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+        .gradient-question { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
+        .gradient-folder { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+        .no-scroll { overflow: hidden; height: 100vh; }
+        
+        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fade-in { animation: fade-in 0.2s ease-out forwards; }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:64px;background:linear-gradient(180deg,rgba(10,14,26,0.97),rgba(10,14,26,1));border-top:1px solid rgba(0,229,255,0.12);display:flex;align-items:center;justify-content:space-around;z-index:1000;backdrop-filter:blur(20px)}
-.bottom-nav.hidden{display:none}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 18px;cursor:pointer;transition:.3s;position:relative;color:var(--text2);font-size:10px;font-weight:700;letter-spacing:.5px}
-.nav-item.active{color:var(--cyan)}
-.nav-item.active::after{content:'';position:absolute;bottom:4px;width:5px;height:5px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
-.nav-item .ni{font-size:22px;height:24px;display:flex;align-items:center;justify-content:center}
+        /* Glow utilities for subjects */
+        .glow-pink { box-shadow: 0 0 15px rgba(236, 72, 153, 0.4); border-color: rgba(236, 72, 153, 0.5); }
+        .glow-blue { box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); border-color: rgba(59, 130, 246, 0.5); }
+        .glow-red { box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); border-color: rgba(239, 68, 68, 0.5); }
+        .glow-orange { box-shadow: 0 0 15px rgba(249, 115, 22, 0.4); border-color: rgba(249, 115, 22, 0.5); }
+        .glow-green { box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); border-color: rgba(16, 185, 129, 0.5); }
+        .glow-cyan { box-shadow: 0 0 15px rgba(6, 182, 212, 0.4); border-color: rgba(6, 182, 212, 0.5); }
+        .glow-purple { box-shadow: 0 0 15px rgba(168, 85, 247, 0.4); border-color: rgba(168, 85, 247, 0.5); }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
 
-.app-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:linear-gradient(135deg,rgba(19,24,50,0.98),rgba(10,14,26,0.98));border-bottom:1px solid rgba(0,229,255,0.08);position:sticky;top:0;z-index:100;backdrop-filter:blur(15px)}
-.logo-area{display:flex;align-items:center;gap:10px}
-.logo-box{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--pink),var(--orange));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:11px;color:#fff;letter-spacing:.5px}
-.logo-text{font-size:18px;font-weight:900;letter-spacing:1px}
-.logo-sub{font-size:9px;color:var(--orange);font-weight:800;letter-spacing:2.5px;margin-top:-2px}
-.hdr-right{display:flex;align-items:center;gap:10px}
-.moon-btn{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,0.12);background:transparent;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:.3s}
-.moon-btn:active{transform:scale(0.9)}
-.user-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff}
-.uname{font-size:13px;color:var(--text2);font-weight:600}
+    <script type="text/babel">
+        // Default Embedded JSON Data
+        const rawData = [
+            { "question": "కొత్తపల్లి గ్రామ కేస్ స్టడీలో ICRISAT మరియు ఇతర సంస్థల భాగస్వామ్యంతో నిర్మించిన 'రాతి కట్టడపు ఆనకట్టల' (Masonry dams) సంఖ్య ఎంత?", "options": ["1", "60", "13", "14"], "answer_index": 2 },
+            { "question": "కింది వాటిని జతపరచండి:\n\n1. ప్రపంచ సంరక్షణ వ్యూహం — అ) 1948\n\n2. IUCN — ఆ) 1980\n\n3. కొత్తపల్లి ప్రాజెక్ట్ — ఇ) మూసీ నది\n\n4. శ్రీరామ్ సాగర్ — ఈ) ICRISAT", "options": ["1-ఇ, 2-ఈ, 3-అ, 4-ఆ", "1-అ, 2-ఆ, 3-ఇ, 4-ఈ", "1-ఆ, 2-అ, 3-ఈ, 4-ఇ", "1-ఈ, 2-ఇ, 3-ఆ, 4-అ"], "answer_index": 2 },
+            { "question": "సహజ వనరుల సంరక్షణకు సంబంధించిన కింది ప్రకటనలను పరిశీలించండి:\n\n1. వనరుల అధిక వినియోగం తగ్గించాలి\n2. పునరుత్పత్తి వనరులను ప్రోత్సహించాలి\n3. వనరులను పూర్తిగా వినియోగించాలి\n4. పర్యావరణ సమతుల్యతను కాపాడాలి", "options": ["1, 2 మరియు 4 సరైనవి", "1 మరియు 3 సరైనవి", "2, 3 మరియు 4 సరైనవి", "అన్ని సరైనవి"], "correct_option_id": 0 },
+            { "question": "కొత్తపల్లి గ్రామంలో భూగర్భ జల మట్టం పెరగడానికి దోహదపడిన 'మినీ ఇంకుడు గుంతల' (Mini-percolation pits) సంఖ్య ఎంత?", "options": ["14", "60", "1", "13"], "answer_index": 1 },
+            { "question": "కింది వనరులలో 'పునర్వినియోగం కాని వనరుల' (Non-renewable resources) సమూహాన్ని గుర్తించండి:", "options": ["బొగ్గు, పెట్రోలియం, సహజ వాయువు", "సౌర శక్తి, గాలి, నీరు", "అడవులు, జంతువులు, నేల", "బయో డీజిల్, గాలి, ఖనిజాలు"], "answer_index": 0 }
+        ];
 
-.back-btn{display:flex;align-items:center;gap:6px;padding:10px 16px;color:var(--text2);font-size:14px;cursor:pointer;border:none;background:none;font-weight:600;font-family:inherit}
-.back-btn:active{color:var(--cyan)}
+        const defaultExam = {
+            id: 'default_exam_01',
+            title: 'సహజ వనరుల నిర్వహణ - Mock Test',
+            folderId: null,
+            subjectId: 'social',
+            questions: rawData.map(q => ({
+                question: q.question,
+                options: q.options,
+                correct: q.answer_index !== undefined ? q.answer_index : q.correct_option_id
+            }))
+        };
 
-/* Hero Banner */
-.hero{margin:14px 16px;border-radius:18px;padding:24px 20px;background:linear-gradient(135deg,#0c1445 0%,#1a237e 50%,#0d47a1 100%);border:1px solid rgba(0,229,255,0.15);text-align:center;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;top:-60%;left:-60%;width:220%;height:220%;background:radial-gradient(circle,rgba(0,229,255,0.06) 0%,transparent 60%);animation:rotate 25s linear infinite}
-@keyframes rotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.hero .hbadge{display:inline-block;padding:4px 14px;background:rgba(0,229,255,0.12);border:1px solid rgba(0,229,255,0.2);border-radius:20px;font-size:12px;color:var(--cyan);font-weight:700;margin-bottom:10px;position:relative}
-.hero h2{font-size:24px;font-weight:900;margin-bottom:6px;position:relative}
-.hero p{font-size:13px;color:var(--text2);margin-bottom:16px;position:relative}
-.hero .cta{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:linear-gradient(135deg,var(--orange),#ff6d00);border-radius:28px;color:#fff;font-weight:800;font-size:14px;border:none;cursor:pointer;position:relative;box-shadow:0 4px 20px rgba(255,140,0,0.3);transition:.3s}
-.hero .cta:active{transform:scale(0.97)}
+        const SUBJECTS = [
+            { id: 'psychology', name: 'PSYCHOLOGY', subtitle: 'PSYCHOLOGY', icon: '🧠', colorClass: 'glow-pink', iconColor: 'text-pink-500' },
+            { id: 'telugu', name: 'TELUGU', subtitle: 'TELUGU', icon: 'అ', colorClass: 'glow-blue', iconColor: 'text-blue-400' },
+            { id: 'english', name: 'ENGLISH', subtitle: 'ENGLISH', icon: 'A', colorClass: 'glow-red', iconColor: 'text-red-500' },
+            { id: 'mathematics', name: 'MATHEMATICS', subtitle: 'MATHEMATICS', icon: '➗', colorClass: 'glow-orange', iconColor: 'text-orange-400' },
+            { id: 'evs', name: 'EVS', subtitle: 'EVS', icon: '🌱', colorClass: 'glow-green', iconColor: 'text-emerald-400' },
+            { id: 'science', name: 'SCIENCE', subtitle: 'SCIENCE', icon: '🔬', colorClass: 'glow-cyan', iconColor: 'text-cyan-400' },
+            { id: 'social', name: 'SOCIAL', subtitle: 'SOCIAL', icon: '🏛️', colorClass: 'glow-orange', iconColor: 'text-orange-500' },
+            { id: 'telugu_method', name: 'TELUGU METHOD', subtitle: 'TELUGU METHOD', icon: '💬', colorClass: 'glow-purple', iconColor: 'text-purple-400' },
+            { id: 'english_method', name: 'ENGLISH METHOD', subtitle: 'ENGLISH METHOD', icon: '📄', colorClass: 'glow-purple', iconColor: 'text-purple-400' },
+            { id: 'tri_method', name: 'TRI METHOD', subtitle: 'TRI METHOD', icon: '🔗', colorClass: 'glow-purple', iconColor: 'text-purple-400' },
+            { id: 'current_affairs', name: 'CURRENT AFFAIRS', subtitle: 'HOME', icon: '📰', colorClass: 'glow-blue', iconColor: 'text-blue-500' },
+            { id: 'others', name: 'OTHERS', subtitle: 'OTHERS', icon: '📖', colorClass: 'glow-orange', iconColor: 'text-orange-500' }
+        ];
 
-.sec-title{display:flex;align-items:center;gap:8px;padding:18px 16px 10px;font-size:18px;font-weight:800}
+        const ALPHABETS = ['A', 'B', 'C', 'D', 'E'];
+        const DEFAULT_CIRCLE_COLORS = ['bg-blue-600', 'bg-emerald-600', 'bg-orange-600', 'bg-purple-600'];
+        const TOTAL_TIME = 60 * 60; // 60 minutes
 
-/* State Cards */
-.states{padding:0 16px 20px;display:flex;flex-direction:column;gap:14px}
-.st-card{border-radius:18px;overflow:hidden;cursor:pointer;position:relative;height:150px;transition:.3s;border:2px solid transparent}
-.st-card:active{transform:scale(0.98)}
-.st-card.ap{background:linear-gradient(135deg,#ff9100 0%,#ff6d00 50%,#e65100 100%);border-color:rgba(255,145,0,0.35)}
-.st-card.tg{background:linear-gradient(135deg,#039be5 0%,#0277bd 50%,#01579b 100%);border-color:rgba(3,155,229,0.35)}
-.st-inner{position:relative;z-index:2;padding:20px;height:100%;display:flex;flex-direction:column;justify-content:center}
-.st-card .dsc-line{display:flex;align-items:center;gap:6px;margin-bottom:4px}
-.st-card .dsc-shield{width:22px;height:22px;background:var(--red);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:900;color:#fff}
-.st-card .dsc-label{font-size:11px;font-weight:900;color:rgba(255,255,255,0.95);letter-spacing:1.5px}
-.st-card .loc{display:flex;align-items:center;gap:4px;font-size:11px;color:rgba(255,255,255,0.7);margin-bottom:2px}
-.st-card h3{font-size:28px;font-weight:900;color:#fff;margin-bottom:4px;text-shadow:0 2px 8px rgba(0,0,0,0.2)}
-.st-card .tag{display:inline-block;padding:3px 10px;background:rgba(255,255,255,0.2);border-radius:5px;font-size:11px;color:#fff;font-weight:700;margin-bottom:10px;backdrop-filter:blur(4px)}
-.st-card .go-btn{display:inline-flex;align-items:center;gap:5px;padding:9px 20px;background:linear-gradient(135deg,var(--orange),#ff6d00);border-radius:22px;color:#fff;font-weight:800;font-size:13px;border:none;cursor:pointer;width:fit-content;box-shadow:0 2px 12px rgba(0,0,0,0.2)}
+        const { useState, useEffect } = React;
 
-/* Course Grid */
-.course-hdr{text-align:center;padding:16px}
-.course-hdr .cbadge{display:inline-block;padding:5px 16px;background:linear-gradient(135deg,var(--cyan),var(--purple));border-radius:20px;font-size:12px;font-weight:800;color:#fff;margin-bottom:6px}
-.course-hdr h2{font-size:22px;font-weight:900}
-.course-hdr .csub{font-size:13px;color:var(--text2);margin-top:2px}
-.pro-tip{margin:0 16px 14px;padding:14px 16px;background:var(--card);border:1px solid rgba(0,229,255,0.12);border-radius:14px;display:flex;align-items:center;gap:12px}
-.pro-tip .picon{font-size:30px;animation:float 3s ease-in-out infinite}
-.pro-tip .ptext{flex:1}
-.pro-tip .ptext h4{font-size:14px;font-weight:700}
-.pro-tip .ptext p{font-size:11px;color:var(--text2)}
-.pro-tip .fbadge{padding:4px 12px;background:rgba(0,229,255,0.12);border:1px solid var(--cyan);border-radius:16px;font-size:11px;color:var(--cyan);font-weight:800}
+        // Shared SVGs
+        const PaletteIcon = () => <svg className="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 6h16M4 12h16M4 18h16" /></svg>;
+        const CheckCircle = () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>;
+        const XCircle = () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" /></svg>;
+        const DashIcon = () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M20 12H4" /></svg>;
+        const HomeIcon = () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>;
+        const RetryIcon = () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>;
+        const WarningIcon = () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>;
+        const ClockIcon = () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>;
+        const BookIcon = () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>;
+        const UploadIcon = () => <svg className="w-5 h-5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>;
+        const FolderIcon = () => <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>;
+        const FolderPlusIcon = () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" /></svg>;
+        const BackIcon = () => <svg className="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>;
+        const MenuIcon = () => <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" /></svg>;
+        const ChevronRight = () => <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>;
 
-.course-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:0 16px}
-.c-card{background:var(--card);border-radius:18px;padding:26px 16px;text-align:center;cursor:pointer;transition:.3s;position:relative;border:1.5px solid transparent;overflow:hidden}
-.c-card:active{transform:scale(0.97)}
-.c-card.sgt{border-color:rgba(0,229,255,0.35);box-shadow:0 0 25px rgba(0,229,255,0.12);animation:glow 4s infinite}
-.c-card.sa{border-color:rgba(168,85,247,0.25)}
-.c-card.lp{border-color:rgba(168,85,247,0.18)}
-.c-card.pgt{border-color:rgba(255,140,0,0.18)}
-.c-card .locked{position:absolute;top:10px;right:10px;padding:3px 9px;background:rgba(255,255,255,0.08);border-radius:10px;font-size:10px;color:var(--text2);display:flex;align-items:center;gap:3px;backdrop-filter:blur(4px)}
-.c-card .ic{width:64px;height:64px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:30px}
-.c-card.sgt .ic{background:rgba(0,229,255,0.12);border:2px solid rgba(0,229,255,0.3)}
-.c-card.sa .ic{background:rgba(168,85,247,0.12);border:2px solid rgba(168,85,247,0.25)}
-.c-card.lp .ic{background:rgba(168,85,247,0.08);border:2px solid rgba(168,85,247,0.18)}
-.c-card.pgt .ic{background:rgba(255,140,0,0.08);border:2px solid rgba(255,140,0,0.18)}
-.c-card h3{font-size:22px;font-weight:900;margin-bottom:4px}
-.c-card .csub{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:1.5px;font-weight:700}
-.c-card.lk{opacity:0.55}
+        const App = () => {
+            // Global App State
+            const [appState, setAppState] = useState('HOME'); // HOME (Neon), SUBJECT_VIEW, EXAM, RESULT
+            const [activeSubject, setActiveSubject] = useState(null); // 'social', 'telugu' etc.
+            const [examsList, setExamsList] = useState([defaultExam]);
+            const [folders, setFolders] = useState([]);
+            const [currentFolderId, setCurrentFolderId] = useState(null); // null = Subject Root
+            
+            const [activeExamId, setActiveExamId] = useState(null);
+            const [toast, setToast] = useState(null);
 
-.soon-banner{margin:22px 16px;padding:16px;border:2px dashed rgba(255,140,0,0.25);border-radius:14px;text-align:center;color:var(--orange);font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px}
+            // Active Exam States
+            const [currentIdx, setCurrentIdx] = useState(0);
+            const [userAnswers, setUserAnswers] = useState({});
+            const [marked, setMarked] = useState({});
+            const [visited, setVisited] = useState({ 0: true }); 
+            const [timeRemaining, setTimeRemaining] = useState(TOTAL_TIME);
+            
+            // Custom UI Modals (No alerts/prompts)
+            const [showPaletteModal, setShowPaletteModal] = useState(false);
+            const [showSubmitModal, setShowSubmitModal] = useState(false);
+            const [showObjectionModal, setShowObjectionModal] = useState(false);
+            const [expandedQuestion, setExpandedQuestion] = useState(null);
+            
+            // Generic Action Modals
+            const [inputModal, setInputModal] = useState({ isOpen: false, title: '', placeholder: '', value: '', onSave: null });
+            const [confirmModal, setConfirmModal] = useState({ isOpen: false, message: '', onConfirm: null });
 
-/* Subject Grid */
-.subj-hdr{text-align:center;padding:14px 16px}
-.subj-hdr .sbadge{display:inline-block;padding:6px 22px;background:linear-gradient(135deg,rgba(0,229,255,0.12),rgba(168,85,247,0.12));border:1px solid rgba(0,229,255,0.25);border-radius:22px;font-size:12px;font-weight:800;color:var(--cyan);margin-bottom:8px}
-.subj-hdr .sbtitle{font-size:10px;color:var(--text2);display:block;font-weight:500}
-.subj-hdr h2{font-size:26px;font-weight:900;margin-bottom:4px}
-.subj-hdr>p{font-size:13px;color:var(--text2)}
-.dots{display:flex;justify-content:center;gap:6px;margin-bottom:8px}
-.dots span{width:8px;height:8px;border-radius:50%}
-.dots span:nth-child(1){background:var(--orange)}
-.dots span:nth-child(2){background:var(--cyan)}
-.dots span:nth-child(3){background:var(--pink)}
+            const [moveModalExamId, setMoveModalExamId] = useState(null); 
+            const [activeMenuId, setActiveMenuId] = useState(null); 
 
-.subj-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 16px}
-.s-card{display:flex;align-items:center;gap:10px;padding:14px 12px;border-radius:14px;cursor:pointer;transition:.3s;position:relative;overflow:hidden;border:1.5px solid transparent}
-.s-card:active{transform:scale(0.97)}
-.s-card .si{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.s-card .sinfo{flex:1;min-width:0}
-.s-card .sinfo h4{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.s-card .sinfo p{font-size:9px;color:var(--text2);text-transform:uppercase}
-.s-card .sarr{font-size:16px;color:var(--cyan);flex-shrink:0;font-weight:700}
+            // Load Data on Mount
+            useEffect(() => {
+                const storedExams = localStorage.getItem('dscadda_exams_list');
+                const storedFolders = localStorage.getItem('dscadda_folders');
+                
+                if (storedExams) setExamsList(JSON.parse(storedExams));
+                if (storedFolders) setFolders(JSON.parse(storedFolders));
+                
+                const savedAppState = localStorage.getItem('dscadda_app_state');
+                const savedActiveId = localStorage.getItem('dscadda_active_exam');
+                const savedSubject = localStorage.getItem('dscadda_active_subject');
+                
+                if (savedSubject) setActiveSubject(savedSubject);
+                
+                if (savedAppState && savedAppState !== 'HOME') {
+                    if(savedActiveId) {
+                        setActiveExamId(savedActiveId);
+                        loadExamProgress(savedActiveId);
+                    }
+                    setAppState(savedAppState);
+                }
+            }, []);
 
-.s-card:nth-child(1){background:rgba(255,45,117,0.07);border-color:rgba(255,45,117,0.22)}.s-card:nth-child(1) .si{background:rgba(255,45,117,0.18)}
-.s-card:nth-child(2){background:rgba(0,229,255,0.07);border-color:rgba(0,229,255,0.22)}.s-card:nth-child(2) .si{background:rgba(0,229,255,0.18)}
-.s-card:nth-child(3){background:rgba(255,69,58,0.07);border-color:rgba(255,69,58,0.22)}.s-card:nth-child(3) .si{background:rgba(255,69,58,0.18)}
-.s-card:nth-child(4){background:rgba(255,159,0,0.07);border-color:rgba(255,159,0,0.22)}.s-card:nth-child(4) .si{background:rgba(255,159,0,0.18)}
-.s-card:nth-child(5){background:rgba(0,200,83,0.07);border-color:rgba(0,200,83,0.22)}.s-card:nth-child(5) .si{background:rgba(0,200,83,0.18)}
-.s-card:nth-child(6){background:rgba(0,176,255,0.07);border-color:rgba(0,176,255,0.22)}.s-card:nth-child(6) .si{background:rgba(0,176,255,0.18)}
-.s-card:nth-child(7){background:rgba(156,39,176,0.07);border-color:rgba(156,39,176,0.22)}.s-card:nth-child(7) .si{background:rgba(156,39,176,0.18)}
-.s-card:nth-child(8){background:rgba(233,30,99,0.07);border-color:rgba(233,30,99,0.22)}.s-card:nth-child(8) .si{background:rgba(233,30,99,0.18)}
-.s-card:nth-child(9){background:rgba(33,150,243,0.07);border-color:rgba(33,150,243,0.22)}.s-card:nth-child(9) .si{background:rgba(33,150,243,0.18)}
-.s-card:nth-child(10){background:rgba(255,87,34,0.07);border-color:rgba(255,87,34,0.22)}.s-card:nth-child(10) .si{background:rgba(255,87,34,0.18)}
-.s-card:nth-child(11){background:rgba(0,150,136,0.07);border-color:rgba(0,150,136,0.22)}.s-card:nth-child(11) .si{background:rgba(0,150,136,0.18)}
-.s-card:nth-child(12){background:rgba(255,193,7,0.07);border-color:rgba(255,193,7,0.22)}.s-card:nth-child(12) .si{background:rgba(255,193,7,0.18)}
+            // Toast Logic
+            useEffect(() => {
+                if (toast) {
+                    const timer = setTimeout(() => setToast(null), 3000);
+                    return () => clearTimeout(timer);
+                }
+            }, [toast]);
 
-/* Content Page */
-.cnt-hdr{text-align:center;padding:14px 16px 8px}
-.cnt-hdr h2{font-size:22px;font-weight:900}
-.cnt-hdr .cname{color:var(--cyan);font-size:14px;font-weight:600}
+            // Timer Logic
+            useEffect(() => {
+                let timer;
+                if (appState === 'EXAM' && timeRemaining > 0 && !showSubmitModal && !showPaletteModal && !showObjectionModal && !inputModal.isOpen && !confirmModal.isOpen) {
+                    timer = setInterval(() => {
+                        setTimeRemaining(prev => {
+                            const newTime = prev - 1;
+                            if(activeExamId) saveProgressToLocal(activeExamId, 'time', newTime.toString());
+                            return newTime;
+                        });
+                    }, 1000);
+                } else if (timeRemaining === 0 && appState === 'EXAM') {
+                    finalizeSubmit();
+                }
+                return () => clearInterval(timer);
+            }, [appState, timeRemaining, showSubmitModal, showPaletteModal, showObjectionModal, activeExamId, inputModal.isOpen, confirmModal.isOpen]);
 
-.cnt-tabs{display:flex;gap:8px;padding:0 16px 14px}
-.ctab{flex:1;padding:16px 8px;border-radius:14px;text-align:center;cursor:pointer;font-weight:800;font-size:12px;transition:.3s;border:1.5px solid transparent;background:var(--card);letter-spacing:.3px}
-.ctab.exams{border-color:rgba(0,229,255,0.15);color:var(--cyan)}
-.ctab.material{border-color:rgba(168,85,247,0.15);color:var(--purple)}
-.ctab.classes{border-color:rgba(0,200,83,0.15);color:var(--green)}
-.ctab.active.exams{background:linear-gradient(135deg,rgba(0,229,255,0.12),rgba(0,229,255,0.04));border-color:var(--cyan);box-shadow:0 0 18px rgba(0,229,255,0.15)}
-.ctab.active.material{background:linear-gradient(135deg,rgba(168,85,247,0.12),rgba(168,85,247,0.04));border-color:var(--purple);box-shadow:0 0 18px rgba(168,85,247,0.15)}
-.ctab.active.classes{background:linear-gradient(135deg,rgba(0,200,83,0.12),rgba(0,200,83,0.04));border-color:var(--green);box-shadow:0 0 18px rgba(0,200,83,0.15)}
-.ctab .ticon{font-size:24px;margin-bottom:4px}
-.ctab:active{transform:scale(0.96)}
+            // Body Scroll Lock for Modals
+            useEffect(() => {
+                if (showPaletteModal || showSubmitModal || showObjectionModal || moveModalExamId || inputModal.isOpen || confirmModal.isOpen) {
+                    document.body.classList.add('no-scroll');
+                } else {
+                    document.body.classList.remove('no-scroll');
+                }
+                return () => document.body.classList.remove('no-scroll');
+            }, [showPaletteModal, showSubmitModal, showObjectionModal, moveModalExamId, inputModal.isOpen, confirmModal.isOpen]);
 
-.bcrumb{display:flex;align-items:center;gap:4px;padding:6px 16px;font-size:12px;color:var(--text2);flex-wrap:wrap}
-.bcrumb span{cursor:pointer;padding:3px 7px;border-radius:5px;transition:.2s}
-.bcrumb span:hover,.bcrumb span:active{background:rgba(0,229,255,0.1);color:var(--cyan)}
-.bcrumb .sep{color:rgba(255,255,255,0.15);cursor:default}
-.bcrumb .sep:hover{background:none;color:rgba(255,255,255,0.15)}
+            // --- HELPER FUNCTIONS ---
+            const saveProgressToLocal = (examId, key, value) => {
+                localStorage.setItem(`dscadda_${examId}_${key}`, typeof value === 'string' ? value : JSON.stringify(value));
+            };
 
-.clist{padding:0 16px 20px}
-.fi,.ei{display:flex;align-items:center;gap:12px;padding:15px;background:var(--card);border-radius:14px;margin-bottom:8px;cursor:pointer;transition:.3s;border:1px solid rgba(255,255,255,0.04)}
-.fi:active,.ei:active{transform:translateX(3px);border-color:rgba(0,229,255,0.2)}
-.fi .fic{font-size:22px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;background:rgba(255,193,7,0.08);border-radius:11px}
-.ei .fic{font-size:20px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;background:rgba(0,229,255,0.08);border-radius:11px}
-.fi .finfo,.ei .finfo{flex:1}
-.fi .finfo h4,.ei .finfo h4{font-size:14px;font-weight:700}
-.fi .finfo p,.ei .finfo p{font-size:11px;color:var(--text2)}
-.farr{color:var(--text2);font-size:18px}
-.empty{text-align:center;padding:50px 20px;color:var(--text2)}
-.empty .eicon{font-size:52px;margin-bottom:14px}
-.empty p{font-size:14px;line-height:1.6}
+            const loadExamProgress = (examId) => {
+                const ans = localStorage.getItem(`dscadda_${examId}_answers`);
+                const idx = localStorage.getItem(`dscadda_${examId}_current`);
+                const mrk = localStorage.getItem(`dscadda_${examId}_marked`);
+                const vis = localStorage.getItem(`dscadda_${examId}_visited`);
+                const time = localStorage.getItem(`dscadda_${examId}_time`);
 
-/* Exam */
-.ex-top{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:linear-gradient(135deg,#1a237e,#0d47a1);position:sticky;top:0;z-index:100}
-.ex-top .etitle{font-size:14px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-right:10px}
-.timer{display:flex;align-items:center;gap:5px;padding:5px 12px;background:rgba(255,255,255,0.08);border-radius:16px;font-size:14px;font-weight:800;color:var(--green);font-variant-numeric:tabular-nums}
-.timer.warn{color:var(--yellow)}
-.timer.danger{color:var(--red);animation:pulse 1s infinite}
-.ebar{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;background:rgba(0,0,0,0.25);font-size:12px;color:var(--text2)}
-.ebar .pbtn{padding:5px 14px;background:rgba(255,255,255,0.08);border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,0.08);color:var(--text);font-size:12px;font-weight:600;font-family:inherit}
-.ebar .pbtn:active{background:rgba(255,255,255,0.15)}
+                setUserAnswers(ans ? JSON.parse(ans) : {});
+                setCurrentIdx(idx ? parseInt(idx, 10) : 0);
+                setMarked(mrk ? JSON.parse(mrk) : {});
+                setVisited(vis ? JSON.parse(vis) : { 0: true });
+                setTimeRemaining(time ? parseInt(time, 10) : TOTAL_TIME);
+            };
 
-.qarea{padding:16px}
-.qnum{display:inline-block;padding:4px 14px;background:var(--red);border-radius:16px;font-size:12px;font-weight:800;color:#fff;margin-bottom:14px}
-.qcard{padding:24px 22px;border-radius:18px;margin-bottom:16px;min-height:100px;line-height:1.7}
-.qcard.style0{background:linear-gradient(135deg,#ff8f00,#f57c00,#ef6c00)}
-.qcard.style1{background:linear-gradient(135deg,#1565c0,#0d47a1,#002171)}
-.qcard.style2{background:linear-gradient(135deg,#6a1b9a,#4a148c,#311b92)}
-.qcard.style3{background:linear-gradient(135deg,#00695c,#004d40,#00352d)}
-.qcard .qtxt{font-size:16px;font-weight:700;color:#fff;white-space:pre-line}
+            const getActiveExamData = () => examsList.find(e => e.id === activeExamId) || defaultExam;
 
-.objbtn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border:1px solid rgba(255,255,255,0.15);border-radius:9px;font-size:12px;color:var(--text2);cursor:pointer;background:none;margin-bottom:18px;font-family:inherit;font-weight:600}
-.objbtn:active{border-color:var(--yellow);color:var(--yellow)}
+            // --- NAVIGATION ---
+            const openSubject = (subId) => {
+                setActiveSubject(subId);
+                setCurrentFolderId(null);
+                setAppState('SUBJECT_VIEW');
+                localStorage.setItem('dscadda_app_state', 'SUBJECT_VIEW');
+                localStorage.setItem('dscadda_active_subject', subId);
+                window.scrollTo(0,0);
+            };
 
-.opts{display:flex;flex-direction:column;gap:10px}
-.opt{display:flex;align-items:center;gap:14px;padding:15px 16px;background:var(--card);border-radius:14px;cursor:pointer;transition:.2s;border:2px solid transparent}
-.opt:active{transform:scale(0.98)}
-.opt.sel{border-color:var(--cyan);background:rgba(0,229,255,0.06)}
-.opt .ol{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0}
-.opt:nth-child(1) .ol{background:rgba(0,229,255,0.12);color:var(--cyan)}
-.opt:nth-child(2) .ol{background:rgba(0,200,83,0.12);color:var(--green)}
-.opt:nth-child(3) .ol{background:rgba(255,140,0,0.12);color:var(--orange)}
-.opt:nth-child(4) .ol{background:rgba(168,85,247,0.12);color:var(--purple)}
-.opt .ot{flex:1;font-size:14px;line-height:1.5}
+            const goHome = () => {
+                setAppState('HOME');
+                localStorage.setItem('dscadda_app_state', 'HOME');
+                setActiveSubject(null);
+                setActiveExamId(null);
+                setExpandedQuestion(null);
+                window.scrollTo(0, 0);
+            };
 
-.exbot{position:fixed;bottom:0;left:0;right:0;display:flex;gap:6px;padding:10px 12px;background:linear-gradient(180deg,rgba(10,14,26,0.97),rgba(10,14,26,1));border-top:1px solid rgba(255,255,255,0.08);z-index:100}
-.exbtn{flex:1;padding:13px;border-radius:11px;font-weight:800;font-size:13px;cursor:pointer;border:none;text-align:center;transition:.2s;font-family:inherit}
-.exbtn:active{transform:scale(0.96)}
-.exbtn.prev{background:var(--green);color:#fff}
-.exbtn.mark{background:var(--yellow);color:#000}
-.exbtn.nxt{background:var(--card);color:var(--text);border:1px solid rgba(255,255,255,0.12)}
-.exbtn.sub{background:linear-gradient(135deg,#00c853,#00a844);color:#fff}
+            const goBackToSubject = () => {
+                setAppState('SUBJECT_VIEW');
+                localStorage.setItem('dscadda_app_state', 'SUBJECT_VIEW');
+                setActiveExamId(null);
+                setExpandedQuestion(null);
+                window.scrollTo(0, 0);
+            }
 
-/* Palette */
-.pmodal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:2000;background:rgba(0,0,0,0.75);align-items:center;justify-content:center;padding:20px}
-.pmodal.show{display:flex}
-.pcont{background:var(--card);border-radius:18px;padding:22px;max-width:380px;width:100%;max-height:80vh;overflow-y:auto;border:1px solid rgba(255,255,255,0.08)}
-.pcont h3{font-size:17px;font-weight:800;margin-bottom:6px}
-.pleg{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
-.pleg .lg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)}
-.pleg .dt{width:15px;height:15px;border-radius:4px}
-.pleg .dt.a{background:var(--green)}
-.pleg .dt.m{background:var(--yellow)}
-.pleg .dt.u{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15)}
-.pleg .dt.c{background:var(--cyan)}
-.pgrid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-bottom:18px}
-.pn{width:100%;aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;cursor:pointer;ba
+            // --- FOLDER & EXAM MANAGEMENT (Using Custom UI Modals) ---
+            const handleCreateFolder = () => {
+                setInputModal({
+                    isOpen: true,
+                    title: 'క్రొత్త ఫోల్డర్', // New Folder
+                    placeholder: 'ఫోల్డర్ పేరు (Folder Name)',
+                    value: '',
+                    onSave: (name) => {
+                        const newFolder = { id: 'folder_' + Date.now(), name: name.trim(), subjectId: activeSubject };
+                        const updated = [...folders, newFolder];
+                        setFolders(updated);
+                        localStorage.setItem('dscadda_folders', JSON.stringify(updated));
+                        setToast("ఫోల్డర్ సృష్టించబడింది!");
+                    }
+                });
+            };
+
+            const handleRenameFolder = (id, oldName) => {
+                setActiveMenuId(null);
+                setInputModal({
+                    isOpen: true,
+                    title: 'ఫోల్డర్ పేరు మార్చండి', // Rename Folder
+                    placeholder: 'కొత్త పేరు (New Name)',
+                    value: oldName,
+                    onSave: (name) => {
+                        const updated = folders.map(f => f.id === id ? { ...f, name: name.trim() } : f);
+                        setFolders(updated);
+                        localStorage.setItem('dscadda_folders', JSON.stringify(updated));
+                        setToast("ఫోల్డర్ పేరు మార్చబడింది!");
+                    }
+                });
+            };
+
+            const handleDeleteFolder = (id) => {
+                setActiveMenuId(null);
+                setConfirmModal({
+                    isOpen: true,
+                    message: "ఈ ఫోల్డర్ మరియు అందులోని అన్ని ఎగ్జామ్స్ తొలగించబడతాయి. ఖచ్చితంగా డిలీట్ చేయాలా?",
+                    onConfirm: () => {
+                        const updatedFolders = folders.filter(f => f.id !== id);
+                        const updatedExams = examsList.filter(e => e.folderId !== id);
+                        setFolders(updatedFolders);
+                        setExamsList(updatedExams);
+                        localStorage.setItem('dscadda_folders', JSON.stringify(updatedFolders));
+                        localStorage.setItem('dscadda_exams_list', JSON.stringify(updatedExams));
+                        setToast("ఫోల్డర్ తొలగించబడింది!");
+                    }
+                });
+            };
+
+            const handleRenameExam = (id, oldName) => {
+                setActiveMenuId(null);
+                setInputModal({
+                    isOpen: true,
+                    title: 'ఎగ్జామ్ కొత్త పేరు', // Rename Exam
+                    placeholder: 'కొత్త పేరు (New Name)',
+                    value: oldName,
+                    onSave: (name) => {
+                        const updated = examsList.map(e => e.id === id ? { ...e, title: name.trim() } : e);
+                        setExamsList(updated);
+                        localStorage.setItem('dscadda_exams_list', JSON.stringify(updated));
+                        setToast("ఎగ్జామ్ పేరు మార్చబడింది!");
+                    }
+                });
+            };
+
+            const handleDeleteExam = (id) => {
+                setActiveMenuId(null);
+                setConfirmModal({
+                    isOpen: true,
+                    message: "ఈ ఎగ్జామ్ ఖచ్చితంగా డిలీట్ చేయాలా?",
+                    onConfirm: () => {
+                        const updated = examsList.filter(e => e.id !== id);
+                        setExamsList(updated);
+                        localStorage.setItem('dscadda_exams_list', JSON.stringify(updated));
+                        ['answers', 'marked', 'visited', 'current', 'time'].forEach(key => localStorage.removeItem(`dscadda_${id}_${key}`));
+                        setToast("ఎగ్జామ్ తొలగించబడింది!");
+                    }
+                });
+            };
+
+            const executeMoveExam = (examId, targetFolderId) => {
+                const updated = examsList.map(e => e.id === examId ? { ...e, folderId: targetFolderId } : e);
+                setExamsList(updated);
+                localStorage.setItem('dscadda_exams_list', JSON.stringify(updated));
+                setMoveModalExamId(null);
+                setToast("ఎగ్జామ్ తరలించబడింది!");
+            };
+
+            const handleFileUpload = async (e) => {
+                const files = Array.from(e.target.files);
+                if (!files.length) return;
+
+                let newExams = [];
+                for (const file of files) {
+                    try {
+                        const text = await file.text(); 
+                        const jsonData = JSON.parse(text);
+                        
+                        const formattedQuestions = jsonData.map(q => ({
+                            question: q.question,
+                            options: q.options,
+                            correct: q.answer_index !== undefined ? q.answer_index : q.correct_option_id
+                        }));
+
+                        newExams.push({
+                            id: 'exam_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                            title: file.name.replace('.json', ''),
+                            folderId: currentFolderId,
+                            subjectId: activeSubject, 
+                            questions: formattedQuestions
+                        });
+                    } catch (err) {
+                        console.error("File parse error:", err);
+                        setToast(`ఎర్రర్: ${file.name} సరియైన JSON ఫైల్ కాదు.`);
+                    }
+                }
+                
+                if (newExams.length > 0) {
+                    const updatedExams = [...examsList, ...newExams];
+                    setExamsList(updatedExams);
+                    localStorage.setItem('dscadda_exams_list', JSON.stringify(updatedExams));
+                    setToast(`విజయవంతంగా ${newExams.length} కొత్త ఎగ్జామ్స్ జతచేయబడ్డాయి!`);
+                }
+                e.target.value = null; 
+            };
+
+            // --- EXAM FLOW ACTIONS ---
+            const startExam = (examId, isResume = false) => {
+                setActiveExamId(examId);
+                
+                if (isResume) {
+                    loadExamProgress(examId);
+                } else {
+                    setUserAnswers({});
+                    setMarked({});
+                    setVisited({ 0: true });
+                    setCurrentIdx(0);
+                    setTimeRemaining(TOTAL_TIME);
+                    
+                    saveProgressToLocal(examId, 'answers', {});
+                    saveProgressToLocal(examId, 'marked', {});
+                    saveProgressToLocal(examId, 'visited', { 0: true });
+                    saveProgressToLocal(examId, 'current', '0');
+                    saveProgressToLocal(examId, 'time', TOTAL_TIME.toString());
+                }
+
+                setAppState('EXAM');
+                localStorage.setItem('dscadda_app_state', 'EXAM');
+                localStorage.setItem('dscadda_active_exam', examId);
+            };
+
+            const handleOptionSelect = (optIdx) => {
+                const newAnswers = { ...userAnswers, [currentIdx]: optIdx };
+                setUserAnswers(newAnswers);
+                saveProgressToLocal(activeExamId, 'answers', newAnswers); 
+            };
+
+            const toggleMark = () => {
+                const newMarked = { ...marked, [currentIdx]: !marked[currentIdx] };
+                setMarked(newMarked);
+                saveProgressToLocal(activeExamId, 'marked', newMarked);
+            };
+
+            const navigateTo = (idx) => {
+                const activeExam = getActiveExamData();
+                if (idx >= 0 && idx < activeExam.questions.length) {
+                    setCurrentIdx(idx);
+                    const newVisited = { ...visited, [idx]: true };
+                    setVisited(newVisited);
+                    saveProgressToLocal(activeExamId, 'current', idx.toString());
+                    saveProgressToLocal(activeExamId, 'visited', newVisited);
+                }
+            };
+
+            const finalizeSubmit = () => {
+                setShowSubmitModal(false);
+                setShowPaletteModal(false);
+                setAppState('RESULT');
+                localStorage.setItem('dscadda_app_state', 'RESULT');
+                window.scrollTo(0, 0);
+            };
+
+            const getPaletteClass = (idx) => {
+                const isAns = userAnswers[idx] !== undefined;
+                const isMrk = marked[idx];
+                const isVis = visited[idx];
+                const isActive = currentIdx === idx;
+
+                let bg = "";
+                if (isAns && isMrk) bg = "bg-[#14b8a6] text-white border-transparent"; 
+                else if (isMrk) bg = "bg-[#06b6d4] text-white border-transparent"; 
+                else if (isAns) bg = "bg-[#10b981] text-white border-transparent"; 
+                else if (isVis) bg = "bg-[#ef4444] text-white border-transparent"; 
+                else bg = "bg-[#64748b] text-white border-transparent"; 
+
+                if (isActive) return `${bg} ring-4 ring-offset-2 ring-indigo-500 transform scale-110 z-10`;
+                return bg;
+            };
+
+            const formatTimeMinSec = (seconds) => {
+                const m = Math.floor(seconds / 60);
+                const s = seconds % 60;
+                return `${m}m ${s.toString().padStart(2, '0')}s`;
+            };
+
+            // -------------------------------------------------------------
+            // RENDER: Generic Modals
+            // -------------------------------------------------------------
+            const renderGenericModals = () => {
+                return (
+                    <>
+                        {inputModal.isOpen && (
+                            <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z- flex items-center justify-center p-4 animate-fade-in" onClick={() => setInputModal({isOpen: false})}>
+                                <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+                                    <div className="p-5 border-b border-gray-100 flex justify-between items-center">
+                                        <h3 className="font-black text-gray-900 text-lg">{inputModal.title}</h3>
+                                        <button onClick={() => setInputModal({isOpen: false})} className="text-gray-400 hover:text-gray-600"><XCircle/></button>
+                                    </div>
+                                    <div className="p-5">
+                                        <input 
+                                            type="text" 
+                                            className="w-full border-2 border-gray-200 rounded-xl p-3 font-bold text-gray-800 focus:border-indigo-500 focus:ring-0 outline-none transition"
+                                            placeholder={inputModal.placeholder}
+                                            value={inputModal.value}
+                                            onChange={e => setInputModal({...inputModal, value: e.target.value})}
+                                            autoFocus
+                                        />
+                                    </div>
+                                    <div className="p-4 bg-gray-50 flex justify-end gap-3">
+                                        <button onClick={() => setInputModal({isOpen: false})} className="px-5 py-2.5 text-sm font-bold text-gray-600 bg-white border border-gray-300 rounded-xl hover:bg-gray-100 transition">Cancel</button>
+                                        <button 
+                                            onClick={() => { 
+                                                if(inputModal.value.trim()) {
+                                                    inputModal.onSave(inputModal.value); 
+                                                    setInputModal({isOpen: false}); 
+                                                }
+                                            }} 
+                                            className="px-5 py-2.5 text-sm font-bold text-white bg-indigo-600 rounded-xl shadow-md hover:bg-indigo-700 transition"
+                                        >
+                                            Save
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {confirmModal.isOpen && (
+                            <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z- flex items-center justify-center p-4 animate-fade-in" onClick={() => setConfirmModal({isOpen: false})}>
+                                <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+                                    <div className="p-6">
+                                        <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mb-4">
+                                            <WarningIcon />
+                                        </div>
+                                        <h3 className="font-black text-gray-900 text-lg mb-2">Confirm Action</h3>
+                                        <p className="text-gray-600 font-bold text-sm leading-relaxed">{confirmModal.message}</p>
+                                    </div>
+                                    <div className="p-4 bg-gray-50 flex justify-end gap-3 border-t border-gray-100">
+                                        <button onClick={() => setConfirmModal({isOpen: false})} className="px-5 py-2.5 text-sm font-bold text-gray-600 bg-white border border-gray-300 rounded-xl hover:bg-gray-100 transition">Cancel</button>
+                                        <button 
+                                            onClick={() => { 
+                                                confirmModal.onConfirm(); 
+                                                setConfirmModal({isOpen: false}); 
+                                            }} 
+                                            className="px-5 py-2.5 text-sm font-bold text-white bg-red-600 rounded-xl shadow-md hover:bg-red-700 transition"
+                                        >
+                                            Yes, Proceed
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </>
+                );
+            };
+
+            // -------------------------------------------------------------
+            // SCREEN 1: HOME (NEON DARK THEME SUBJECTS)
+            // -------------------------------------------------------------
+            if (appState === 'HOME') {
+                return (
+                    <div className="min-h-screen space-bg pb-20 font-sans text-white">
+                        <div className="px-5 py-4 flex items-center justify-between z-10 sticky top-0 backdrop-blur-md bg-[#0f0a20]/80 border-b border-indigo-900/50">
+                            <div className="flex items-center gap-3">
+                                <div className="bg-red-600 p-1.5 rounded-lg font-black text-xs leading-none">DSC</div>
+                                <span className="font-bold text-lg tracking-wider">DSC ADDA</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm text-indigo-300">
+                                <span>User</span>
+                                <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-white border border-indigo-400">U</div>
+                            </div>
+                        </div>
+
+                        <div className="max-w-4xl mx-auto p-5 pt-8 text-center">
+                            <div className="inline-flex flex-col items-center justify-center mb-8 border border-cyan-400/30 rounded-2xl px-8 py-3 bg-indigo-900/20 shadow-[0_0_20px_rgba(6,182,212,0.2)]">
+                                <h1 className="text-2xl font-black text-cyan-300 tracking-widest">SGT</h1>
+                                <p className="text-xs text-indigo-200 mt-1">Secondary Grade Teacher</p>
+                            </div>
+                            
+                            <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 mb-2 filter drop-shadow-[0_0_8px_rgba(168,85,247,0.5)]">
+                                SGT Subjects
+                            </h2>
+                            <div className="flex justify-center gap-1.5 mb-4">
+                                <div className="w-2 h-2 rounded-full bg-yellow-400"></div>
+                                <div className="w-2 h-2 rounded-full bg-cyan-400"></div>
+                                <div className="w-2 h-2 rounded-full bg-pink-400"></div>
+                            </div>
+                            <p className="text-sm text-indigo-200 mb-10">Choose a subject to start your preparation</p>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {SUBJECTS.map((sub) => (
+                                    <div key={sub.id} onClick={() => openSubject(sub.id)} 
+                                        className={`bg-[#1a1a2e]/80 border ${sub.colorClass} rounded-2xl p-4 flex items-center justify-between cursor-pointer hover:bg-[#1a1a2e] hover:scale-[1.02] transition-transform backdrop-blur-sm`}>
+                                        <div className="flex items-center gap-4">
+                                            <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl bg-black/30 border border-white/10 ${sub.iconColor} shadow-inner`}>
+                                                {sub.icon}
+                                            </div>
+                                            <div className="text-left">
+                                                <h3 className="font-black text-[15px] tracking-wide text-white">{sub.name}</h3>
+                                                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">{sub.subtitle}</p>
+                                            </div>
+                                        </div>
+                                        <ChevronRight />
+                                    </div>
+                                ))}
+                            </div>
+                            
+                            <p className="mt-12 text-sm text-indigo-300/80 font-bold flex items-center justify-center gap-2 pb-8">
+                                🚀 More Premium Content Coming Soon...
+                            </p>
+                        </div>
+                    </div>
+                );
+            }
+
+            // -------------------------------------------------------------
+            // SCREEN 2: SUBJECT VIEW (FOLDERS & EXAMS)
+            // -------------------------------------------------------------
+            if (appState === 'SUBJECT_VIEW') {
+                const subjectObj = SUBJECTS.find(s => s.id === activeSubject);
+                const subjectFolders = folders.filter(f => f.subjectId === activeSubject);
+                const currentFolderName = currentFolderId ? subjectFolders.find(f => f.id === currentFolderId)?.name : 'Home';
+                const displayedExams = examsList.filter(e => e.subjectId === activeSubject && e.folderId === currentFolderId);
+
+                return (
+                    <div className="min-h-screen bg-gray-50 pb-20 font-sans" onClick={() => setActiveMenuId(null)}>
+                        {/* Header */}
+                        <div className="bg-white px-6 py-4 shadow-sm border-b border-gray-200 sticky top-0 z-10 flex items-center gap-4">
+                            <button onClick={goHome} className="p-2 -ml-2 rounded-full hover:bg-gray-100 transition text-gray-600"><BackIcon/></button>
+                            <h1 className="text-xl font-black text-gray-900 tracking-tight flex items-center gap-2">
+                                <span className="text-2xl">{subjectObj?.icon}</span> {subjectObj?.name}
+                            </h1>
+                            <div className="ml-auto">
+                                <button onClick={handleCreateFolder} className="flex items-center gap-1.5 bg-indigo-50 text-indigo-700 font-bold px-3 py-1.5 rounded-lg hover:bg-indigo-100 transition border border-indigo-200 text-sm">
+                                    <FolderPlusIcon /> New Folder
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="max-w-4xl mx-auto p-4 pt-6">
+                            {/* Breadcrumb */}
+                            <div className="flex items-center gap-2 mb-6 bg-white p-3 rounded-xl shadow-sm border border-gray-200 text-sm">
+                                {currentFolderId ? (
+                                    <button onClick={() => setCurrentFolderId(null)} className="flex items-center text-gray-500 hover:text-indigo-600 font-bold transition">
+                                        <FolderIcon className="text-gray-400 w-4 h-4 mr-1"/> Subject Root
+                                    </button>
+                                ) : (
+                                    <span className="font-black text-gray-800 px-2">Subject Root</span>
+                                )}
+                                {currentFolderId && (
+                                    <>
+                                        <span className="text-gray-300 font-bold">/</span>
+                                        <span className="font-black text-indigo-600 px-2">{currentFolderName}</span>
+                                    </>
+                                )}
+                            </div>
+
+                            {/* Folders Grid */}
+                            {!currentFolderId && subjectFolders.length > 0 && (
+                                <div className="mb-8">
+                                    <h3 className="font-black text-gray-400 uppercase tracking-wider text-xs mb-3 pl-2">Folders</h3>
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                        {subjectFolders.map(f => (
+                                            <div key={f.id} className="bg-white rounded-2xl p-4 shadow-sm border-2 border-gray-100 hover:border-indigo-400 hover:shadow-md transition cursor-pointer relative group" onClick={() => setCurrentFolderId(f.id)}>
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <div className="w-12 h-12 rounded-xl gradient-folder flex items-center justify-center shadow-inner">
+                                                        <FolderIcon />
+                                                    </div>
+                                                    <div className="relative">
+                                                        <button onClick={(e) => { e.stopPropagation(); setActiveMenuId(f.id); }} className="p-1.5 text-gray-400 hover:bg-gray-100 rounded-lg">
+                                                            <MenuIcon />
+                                                        </button>
+                                                        {activeMenuId === f.id && (
+                                                            <div className="absolute right-0 mt-1 w-32 bg-white rounded-xl shadow-xl border border-gray-100 z-20 py-1 overflow-hidden" onClick={e => e.stopPropagation()}>
+                                                                <button onClick={() => handleRenameFolder(f.id, f.name)} className="w-full text-left px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-50">Rename</button>
+                                                                <button onClick={() => handleDeleteFolder(f.id)} className="w-full text-left px-4 py-2 text-sm font-bold text-red-600 hover:bg-red-50 border-t border-gray-100">Delete</button>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <h3 className="font-black text-gray-800 truncate text-sm">{f.name}</h3>
+                                                <p className="text-[10px] font-bold text-gray-500 mt-1">{examsList.filter(e => e.folderId === f.id).length} Exams</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Exams List Header */}
+                            <div className="flex justify-between items-center mb-4 pl-2 mt-4 border-t border-gray-200 pt-6">
+                                <h3 className="font-black text-gray-400 uppercase tracking-wider text-xs">
+                                    Exams in {currentFolderName}
+                                </h3>
+                                <div className="relative">
+                                    <input type="file" accept=".json" multiple onChange={handleFileUpload} className="hidden" id="json-upload" />
+                                    <label htmlFor="json-upload" className="flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1.5 px-3 rounded-lg cursor-pointer transition shadow-sm text-xs">
+                                        <UploadIcon /> Upload JSON
+                                    </label>
+                                </div>
+                            </div>
+
+                            {/* Exams List */}
+                            <div className="grid gap-3">
+                                {displayedExams.length === 0 ? (
+                                    <div className="text-center py-10 bg-white rounded-2xl border border-dashed border-gray-300">
+                                        <p className="text-gray-400 font-bold mb-3 text-sm">No exams found in this folder.</p>
+                                        <label htmlFor="json-upload" className="inline-block bg-gray-100 hover:bg-gray-200 text-gray-700 font-black py-2 px-5 rounded-lg cursor-pointer transition text-sm">
+                                            Upload Now
+                                        </label>
+                                    </div>
+                                ) : (
+                                    displayedExams.map((exam) => {
+                                        const savedAnswersStr = localStorage.getItem(`dscadda_${exam.id}_answers`);
+                                        const savedAnswersObj = savedAnswersStr ? JSON.parse(savedAnswersStr) : {};
+                                        const answeredCnt = Object.keys(savedAnswersObj).length;
+                                        const hasProgress = answeredCnt > 0;
+                                        const progressPct = (answeredCnt / exam.questions.length) * 100;
+
+                                        return (
+                                            <div key={exam.id} className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4 relative hover:border-indigo-300 transition">
+                                                <div className="w-full md:w-auto flex-1">
+                                                    <div className="flex justify-between items-start mb-1">
+                                                        <h2 className="text-base font-black text-gray-900 pr-8 leading-snug truncate">{exam.title}</h2>
+                                                        <div className="absolute right-3 top-3">
+                                                            <button onClick={(e) => { e.stopPropagation(); setActiveMenuId(exam.id); }} className="p-1 text-gray-400 hover:bg-gray-100 rounded-md">
+                                                                <MenuIcon />
+                                                            </button>
+                                                            {activeMenuId === exam.id && (
+                                                                <div className="absolute right-0 mt-1 w-32 bg-white rounded-xl shadow-xl border border-gray-100 z-20 py-1 overflow-hidden" onClick={e => e.stopPropagation()}>
+                                                                    <button onClick={() => { setActiveMenuId(null); setMoveModalExamId(exam.id); }} className="w-full text-left px-4 py-2 text-sm font-bold text-indigo-600 hover:bg-indigo-50">Move</button>
+                                                                    <button onClick={() => handleRenameExam(exam.id, exam.title)} className="w-full text-left px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-50 border-t border-gray-100">Rename</button>
+                                                                    <button onClick={() => handleDeleteExam(exam.id)} className="w-full text-left px-4 py-2 text-sm font-bold text-red-600 hover:bg-red-50 border-t border-gray-100">Delete</button>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-3 text-[11px] font-bold text-gray-500 mb-3">
+                                                        <span className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded"><BookIcon /> {exam.questions.length} Qs</span>
+                                                        <span className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded"><ClockIcon /> 60 Mins</span>
+                                                    </div>
+                                                    
+                                                    {hasProgress && (
+                                                        <div className="w-full md:w-48">
+                                                            <div className="flex justify-between text-[10px] font-black text-gray-500 mb-1">
+                                                                <span>Progress</span>
+                                                                <span>{answeredCnt} / {exam.questions.length}</span>
+                                                            </div>
+                                                            <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                                                <div className="h-full bg-emerald-500" style={{width: `${progressPct}%`}}></div>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                
+                                                <div className="w-full md:w-auto flex gap-2 mt-2 md:mt-0">
+                                                    {hasProgress ? (
+                                                        <>
+                                                            <button onClick={() => startExam(exam.id, false)} className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-600 font-black py-2 px-4 rounded-lg transition active:scale-95 text-xs">
+                                                                Restart
+                                                            </button>
+                                                            <button onClick={() => startExam(exam.id, true)} className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-black py-2 px-4 rounded-lg shadow-sm transition active:scale-95 text-xs">
+                                                                Resume
+                                                            </button>
+                                                        </>
+                                                    ) : (
+                                                        <button onClick={() => startExam(exam.id, false)} className="w-full bg-[#10b981] hover:bg-[#059669] text-white font-black py-2 px-6 rounded-lg shadow-sm transition active:scale-95 text-sm">
+                                                            Start Exam
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )
+                                    })
+                                )}
+                            </div>
+
+                        </div>
+
+                        {/* MOVE EXAM MODAL */}
+                        {moveModalExamId && (
+                            <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z- flex items-center justify-center p-4 animate-fade-in" onClick={() => setMoveModalExamId(null)}>
+                                <div className="bg-white rounded-2xl w-full max-w-xs overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+                                    <div className="flex justify-between items-center p-4 border-b bg-gray-50">
+                                        <h3 className="font-black text-gray-900 text-base">Move to Folder</h3>
+                                        <button onClick={() => setMoveModalExamId(null)} className="text-gray-500 bg-gray-200 rounded-full p-1 hover:bg-gray-300 transition active:scale-90"><XCircle/></button>
+                                    </div>
+                                    <div className="p-3 max-h-64 overflow-y-auto">
+                                        <button onClick={() => executeMoveExam(moveModalExamId, null)} className="w-full flex items-center gap-3 p-3 mb-2 rounded-xl border border-gray-200 hover:border-indigo-400 hover:bg-indigo-50 transition text-left font-bold text-gray-700 text-sm">
+                                            <div className="bg-gray-100 p-1.5 rounded-lg"><HomeIcon/></div> Subject Root
+                                        </button>
+                                        {subjectFolders.map(f => (
+                                            <button key={f.id} onClick={() => executeMoveExam(moveModalExamId, f.id)} className="w-full flex items-center gap-3 p-3 mb-2 rounded-xl border border-gray-200 hover:border-indigo-400 hover:bg-indigo-50 transition text-left font-bold text-gray-700 text-sm">
+                                                <div className="bg-indigo-100 text-indigo-600 p-1.5 rounded-lg"><FolderIcon className="w-4 h-4 text-indigo-600"/></div> {f.name}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        
+                        {/* Generic Modals (Input & Confirm) */}
+                        {renderGenericModals()}
+
+                        {/* TOAST NOTIFICATION */}
+                        {toast && (
+                            <div className="fixed top-16 right-4 z- toast-enter">
+                                <div className="bg-gray-900 text-white px-4 py-2.5 rounded-lg shadow-2xl flex items-center gap-2 text-xs font-bold border border-gray-700">
+                                    <span className="bg-green-500 rounded-full p-0.5"><CheckCircle className="w-3 h-3"/></span>
+                                    {toast}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                );
+            }
+
+            // -------------------------------------------------------------
+            // EXAM SCREEN
+            // -------------------------------------------------------------
+            const activeExam = getActiveExamData();
+
+            if (appState === 'EXAM') {
+                const question = activeExam.questions[currentIdx];
+                const answeredCount = Object.keys(userAnswers).length;
+                const unansweredCount = activeExam.questions.length - answeredCount;
+                const progressPercentage = (answeredCount / activeExam.questions.length) * 100;
+
+                return (
+                    <div className="h-screen flex flex-col bg-[#f8fafc] w-full">
+                        
+                        {/* Main Exam View */}
+                        <div className={`flex flex-col h-full w-full ${showPaletteModal ? 'hidden' : 'flex'}`}>
+                            
+                            {/* TOP SECTION UI */}
+                            <div className="bg-white px-6 py-4 border-b border-gray-200 shadow-sm shrink-0">
+                                <div className="flex justify-between items-center mb-3">
+                                    <div className="text-3xl font-black text-gray-900 tracking-tight flex items-baseline gap-2">
+                                        {currentIdx + 1} 
+                                        <span className="text-lg text-gray-400 font-extrabold">/ {activeExam.questions.length}</span>
+                                    </div>
+                                    <button onClick={() => setShowPaletteModal(true)} className="flex items-center text-gray-800 text-sm font-black bg-gray-100 hover:bg-gray-200 px-5 py-2.5 rounded-xl border-2 border-gray-200 transition active:scale-95">
+                                        <PaletteIcon /> Palette
+                                    </button>
+                                </div>
+                                <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden border border-gray-200/50">
+                                    <div className="h-full bg-blue-600 transition-all duration-300 ease-out" style={{width: `${progressPercentage}%`}}></div>
+                                </div>
+                            </div>
+
+                            {/* Question Content */}
+                            <div className="flex-grow p-5 overflow-y-auto pb-[100px] max-w-3xl mx-auto w-full animate-fade-in">
+                                <div className="gradient-question rounded-2xl p-6 shadow-xl mb-6 relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl transform translate-x-10 -translate-y-10"></div>
+                                    <h2 className="text-white text-xl md:text-2xl font-black leading-relaxed whitespace-pre-wrap relative z-10">
+                                        {question?.question}
+                                    </h2>
+                                </div>
+
+                                <div className="space-y-4">
+                                    {question?.options.map((opt, i) => {
+                                        const isSelected = userAnswers[currentIdx] === i;
+                                        const boxClass = isSelected ? "border-blue-600 bg-blue-50 shadow-md ring-2 ring-blue-500 transform scale-[1.01]" : "border-gray-300 bg-white hover:border-blue-400 hover:shadow-sm";
+                                        const circleClass = isSelected ? "bg-blue-600 text-white border-2 border-blue-600 shadow-md shadow-blue-300" : `${DEFAULT_CIRCLE_COLORS[i % DEFAULT_CIRCLE_COLORS.length]} text-white border-2 border-transparent`;
+
+                                        return (
+                                            <div key={i} onClick={() => handleOptionSelect(i)} className={`flex items-center p-4 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${boxClass}`}>
+                                                <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-black text-lg transition-all duration-200 ${circleClass}`}>
+                                                    {ALPHABETS[i]}
+                                                </div>
+                                                <span className={`ml-5 text-lg leading-snug ${isSelected ? 'text-blue-900 font-black' : 'text-gray-800 font-extrabold'}`}>{opt}</span>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* Solid Color Navigation Bar */}
+                            <div className="bg-white p-3 border-t-2 border-gray-200 flex justify-between gap-3 fixed bottom-0 w-full z-20 shadow-[0_-5px_25px_rgba(0,0,0,0.1)]">
+                                <div className="max-w-3xl mx-auto w-full flex justify-between gap-3">
+                                    <button onClick={() => navigateTo(currentIdx - 1)} disabled={currentIdx === 0} className={`flex-1 font-black py-4 rounded-xl text-base transition flex justify-center items-center ${currentIdx === 0 ? 'bg-gray-300 text-gray-500 opacity-70' : 'bg-[#25b5f0] hover:bg-[#1fa1d6] text-white active:scale-95 shadow-md'}`}>
+                                        ◄ Prev
+                                    </button>
+                                    <button onClick={toggleMark} className={`flex-1 font-black py-4 rounded-xl text-base transition flex justify-center items-center ${marked[currentIdx] ? 'bg-[#ff9f1c] hover:bg-[#e88e17] text-white active:scale-95 shadow-md' : 'bg-gray-400 hover:bg-gray-500 text-white active:scale-95 shadow-md'}`}>
+                                        {marked[currentIdx] ? 'Unmark' : '☼ Mark'}
+                                    </button>
+                                    <button onClick={() => navigateTo(currentIdx + 1)} disabled={currentIdx === activeExam.questions.length - 1} className={`flex-1 font-black py-4 rounded-xl text-base transition flex justify-center items-center ${currentIdx === activeExam.questions.length - 1 ? 'bg-gray-300 text-gray-500 opacity-70' : 'bg-[#8a4fff] hover:bg-[#7641df] text-white active:scale-95 shadow-md'}`}>
+                                        Next ►
+                                    </button>
+                                    <button onClick={() => setShowSubmitModal(true)} className="flex-1 bg-[#2ecc71] hover:bg-[#27ae60] text-white font-black py-4 rounded-xl text-base active:scale-95 transition flex justify-center items-center shadow-md">
+                                        Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* FULL-SCREEN PALETTE MODAL */}
+                        {showPaletteModal && (
+                            <div className="fixed inset-0 z- bg-white flex flex-col animate-fade-in w-full h-full" onClick={() => setShowPaletteModal(false)}>
+                                <div className="w-full h-full flex flex-col" onClick={e => e.stopPropagation()}>
+                                    <div className="bg-white px-6 py-5 flex justify-between items-center shadow-sm border-b border-gray-200 shrink-0">
+                                        <h3 className="font-black text-gray-900 text-2xl">Questions Palette</h3>
+                                        <button onClick={() => setShowPaletteModal(false)} className="p-2.5 bg-gray-100 rounded-full hover:bg-gray-200 text-gray-800 transition">
+                                            <XCircle/>
+                                        </button>
+                                    </div>
+                                    <div className="bg-white p-5 flex flex-wrap gap-3 justify-start border-b border-gray-100 shadow-sm shrink-0">
+                                        <span className="bg-[#10b981] text-white px-3.5 py-1.5 rounded-full text-xs font-black">Answered</span>
+                                        <span className="bg-[#ef4444] text-white px-3.5 py-1.5 rounded-full text-xs font-black">Not Answered</span>
+                                        <span className="bg-[#64748b] text-white px-3.5 py-1.5 rounded-full text-xs font-black">Not Visited</span>
+                                        <span className="bg-[#06b6d4] text-white px-3.5 py-1.5 rounded-full text-xs font-black">Marked</span>
+                                        <span className="bg-[#14b8a6] text-white px-3.5 py-1.5 rounded-full text-xs font-black">Ans+Mark</span>
+                                    </div>
+                                    <div className="flex-grow bg-[#f8fafc] overflow-y-auto p-6">
+                                        <div className="max-w-3xl mx-auto grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-4 pb-10">
+                                            {activeExam.questions.map((_, i) => (
+                                                <button key={i} onClick={() => { navigateTo(i); setShowPaletteModal(false); }} className={`w-14 h-14 md:w-16 md:h-16 mx-auto rounded-full flex items-center justify-center font-black text-lg border-2 transition-all ${getPaletteClass(i)}`}>
+                                                    {i + 1}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* SUBMIT MODAL */}
+                        {showSubmitModal && (
+                            <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z- flex items-center justify-center p-4 animate-fade-in" onClick={() => setShowSubmitModal(false)}>
+                                <div className="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+                                    <div className="flex justify-between items-center p-5 border-b bg-gray-50">
+                                        <h3 className="font-black text-gray-900 text-xl">Submit Quiz?</h3>
+                                        <button onClick={() => setShowSubmitModal(false)} className="text-gray-500 bg-gray-200 rounded-full p-2 hover:bg-gray-300 transition active:scale-90"><XCircle/></button>
+                                    </div>
+                                    <div className="p-6 flex justify-center gap-3">
+                                        <div className="flex-1 border-2 border-emerald-200 bg-emerald-50 rounded-2xl p-3 text-center shadow-sm">
+                                            <div className="text-4xl font-black text-emerald-600 mb-1">{answeredCount}</div>
+                                            <div className="text-xs text-emerald-900 uppercase font-black tracking-wider">Answered</div>
+                                        </div>
+                                        <div className="flex-1 border-2 border-red-200 bg-red-50 rounded-2xl p-3 text-center shadow-sm">
+                                            <div className="text-4xl font-black text-red-600 mb-1">{unansweredCount}</div>
+                                            <div className="text-xs text-red-900 uppercase font-black tracking-wider">Unanswered</div>
+                                        </div>
+                                    </div>
+                                    <div className="p-5 flex gap-3 bg-gray-50 border-t">
+                                        <button onClick={() => setShowSubmitModal(false)} className="flex-1 bg-white border-2 border-gray-300 text-gray-900 font-black py-4 rounded-xl text-base hover:bg-gray-100 active:scale-95 transition">
+                                            Go Back
+                                        </button>
+                                        <button onClick={finalizeSubmit} className="flex-1 bg-[#2ecc71] hover:bg-[#27ae60] text-white border-none font-black py-4 rounded-xl text-base flex justify-center items-center gap-1.5 shadow-lg shadow-emerald-200 active:scale-95 transition">
+                                            <CheckCircle /> Submit
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                );
+            }
+
+            // -------------------------------------------------------------
+            // RESULT SCREEN
+            // -------------------------------------------------------------
+            if (appState === 'RESULT') {
+                let correctCount = 0;
+                let wrongCount = 0;
+                let skippedCount = 0;
+
+                activeExam.questions.forEach((q, i) => {
+                    const uAns = userAnswers[i];
+                    if (uAns === undefined) skippedCount++;
+                    else if (uAns === q.correct) correctCount++;
+                    else wrongCount++;
+                });
+                
+                const accuracy = Math.round((correctCount / activeExam.questions.length) * 100) || 0;
+                const timeTakenSecs = TOTAL_TIME - timeRemaining;
+                const correctWidth = (correctCount / activeExam.questions.length) * 100;
+                const wrongWidth = (wrongCount / activeExam.questions.length) * 100;
+                const skippedWidth = (skippedCount / activeExam.questions.length) * 100;
+
+                return (
+                    <div className="min-h-screen bg-[#f3f4f6] mx-auto max-w-3xl flex flex-col telugu-text pb-[80px]">
+                        <div className="bg-white p-4 shadow-sm border-b border-gray-200">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="relative w-20 h-20 flex-shrink-0">
+                                    <svg viewBox="0 0 36 36" className="w-full h-full transform -rotate-90">
+                                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f1f5f9" strokeWidth="3" />
+                                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e74c3c" strokeWidth="4" strokeDasharray={`${accuracy}, 100`} strokeLinecap="round" />
+                                    </svg>
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                        <span className="text-[18px] font-black text-gray-800">{accuracy}%</span>
+                                        <span className="text-[9px] text-gray-500 font-bold uppercase">Accuracy</span>
+                                    </div>
+                                </div>
+                                
+                                <div className="flex-1 ml-4 flex flex-col gap-2">
+                                    <div className="border border-blue-100 bg-blue-50/30 rounded-xl p-2.5 flex items-center gap-3">
+                                        <div className="bg-blue-100 p-1.5 rounded-full"><ClockIcon/></div>
+                                        <div>
+                                            <div className="text-[14px] font-bold text-blue-800 leading-none">{formatTimeMinSec(timeTakenSecs)}</div>
+                                            <div className="text-[10px] text-blue-500 font-semibold mt-1">Time Taken</div>
+                                        </div>
+                                    </div>
+                                    <div className="border border-purple-100 bg-purple-50/30 rounded-xl p-2.5 flex items-center gap-3">
+                                        <div className="bg-purple-100 p-1.5 rounded-full"><BookIcon/></div>
+                                        <div>
+                                            <div className="text-[14px] font-bold text-purple-800 leading-none">{activeExam.questions.length}</div>
+                                            <div className="text-[10px] text-purple-500 font-semibold mt-1">Total Questions</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex gap-2 mb-3">
+                                <div className="flex-1 bg-[#2ecc71] text-white rounded-xl p-3 text-center shadow-sm relative overflow-hidden">
+                                    <div className="text-[26px] font-black leading-none mb-1">{correctCount}</div>
+                                    <div className="text-[10px] flex justify-center items-center gap-1 font-bold"><CheckCircle /> Correct</div>
+                                </div>
+                                <div className="flex-1 bg-[#e74c3c] text-white rounded-xl p-3 text-center shadow-sm relative overflow-hidden">
+                                    <div className="text-[26px] font-black leading-none mb-1">{wrongCount}</div>
+                                    <div className="text-[10px] flex justify-center items-center gap-1 font-bold"><XCircle /> Wrong</div>
+                                </div>
+                                <div className="flex-1 bg-[#7f8c8d] text-white rounded-xl p-3 text-center shadow-sm relative overflow-hidden">
+                                    <div className="text-[26px] font-black leading-none mb-1">{skippedCount}</div>
+                                    <div className="text-[10px] flex justify-center items-center gap-1 font-bold"><DashIcon /> Skipped</div>
+                                </div>
+                            </div>
+                            <div className="h-1.5 w-full flex rounded-full overflow-hidden mt-1 bg-gray-200">
+                                <div style={{width: `${correctWidth}%`}} className="bg-[#2ecc71]"></div>
+                                <div style={{width: `${wrongWidth}%`}} className="bg-[#e74c3c]"></div>
+                                <div style={{width: `${skippedWidth}%`}} className="bg-[#7f8c8d]"></div>
+                            </div>
+                        </div>
+
+                        <div className="p-4 animate-fade-in flex-grow">
+                            <h3 className="font-black text-gray-800 text-[18px] mb-4 flex items-center gap-2">
+                                <span className="text-purple-600">🎯</span> Question Review
+                            </h3>
+                            <div className="space-y-3">
+                                {activeExam.questions.map((q, i) => {
+                                    const uAns = userAnswers[i];
+                                    const isSkipped = uAns === undefined;
+                                    const isCorrect = uAns === q.correct;
+                                    const isExpanded = expandedQuestion === i;
+
+                                    let statusColor, borderColor, badgeColor, statusText, bgHeader;
+                                    if (isSkipped) {
+                                        statusColor = "text-gray-500"; borderColor = "border-gray-200"; badgeColor = "bg-[#9ca3af]"; statusText = "SKIPPED"; bgHeader = "bg-white";
+                                    } else if (isCorrect) {
+                                        statusColor = "text-[#2ecc71]"; borderColor = "border-[#2ecc71]/50"; badgeColor = "bg-[#2ecc71]"; statusText = "CORRECT"; bgHeader = "bg-[#ecfdf5]";
+                                    } else {
+                                        statusColor = "text-[#e74c3c]"; borderColor = "border-[#e74c3c]/50"; badgeColor = "bg-[#e74c3c]"; statusText = "WRONG"; bgHeader = "bg-[#fef2f2]";
+                                    }
+
+                                    return (
+                                        <div key={i} className={`rounded-xl bg-white border ${borderColor} overflow-hidden shadow-sm transition-all`}>
+                                            <div onClick={() => setExpandedQuestion(isExpanded ? null : i)} className={`p-4 flex items-start gap-3 cursor-pointer ${bgHeader}`}>
+                                                <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-[14px] mt-0.5 ${badgeColor}`}>{i + 1}</div>
+                                                <div className="flex-1">
+                                                    <div className={`text-[10px] font-black uppercase mb-1 flex items-center gap-1 ${statusColor}`}>
+                                                        {isCorrect && <CheckCircle />}{!isCorrect && !isSkipped && <XCircle />}{isSkipped && <DashIcon />}{statusText}
+                                                    </div>
+                                                    <div className={`text-[14px] font-bold text-gray-800 ${isExpanded ? '' : 'line-clamp-2'}`}>{q.question}</div>
+                                                </div>
+                                                <div className="pt-2 text-gray-400">
+                                                    <svg className={`w-5 h-5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+                                                </div>
+                                            </div>
+
+                                            {isExpanded && (
+                                                <div className="p-4 bg-white border-t border-gray-100">
+                                                    <div className="space-y-3 mb-4">
+                                                        {q.options.map((opt, optIdx) => {
+                                                            const isRightOption = optIdx === q.correct;
+                                                            const isSelectedWrong = optIdx === uAns && !isCorrect;
+                                                            let optBoxClass = "border border-gray-200 bg-white text-gray-800";
+                                                            let circleClass = "bg-gray-100 text-gray-600";
+                                                            let icon = null;
+
+                                                            if (isRightOption) {
+                                                                optBoxClass = "bg-[#2ecc71] border-[#2ecc71] text-white"; circleClass = "bg-white text-[#2ecc71]"; icon = <div className="text-white"><CheckCircle /></div>;
+                                                            } else if (isSelectedWrong) {
+                                                                optBoxClass = "bg-[#e74c3c] border-[#e74c3c] text-white"; circleClass = "bg-white text-[#e74c3c]"; icon = <div className="text-white"><XCircle /></div>;
+                                                            }
+
+                                                            return (
+                                                                <div key={optIdx} className={`flex items-center justify-between p-3.5 rounded-xl text-[14px] font-bold ${optBoxClass}`}>
+                                                                    <div className="flex items-center gap-3">
+                                                                        <div className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-[13px] font-black ${circleClass}`}>{ALPHABETS[optIdx]}</div>
+                                                                        <span>{opt}</span>
+                                                                    </div>
+                                                                    {icon && <div className="flex-shrink-0 ml-2">{icon}</div>}
+                                                                </div>
+                                                            )
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+
+                        {/* Fixed Bottom Action Bar */}
+                        <div className="fixed bottom-0 w-full max-w-3xl bg-white p-3 border-t border-gray-200 flex justify-center gap-3 z-20 shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
+                            <button onClick={goBackToSubject} className="flex-1 bg-white border border-gray-300 text-gray-700 font-bold py-3 rounded-xl text-[14px] flex justify-center items-center gap-2 hover:bg-gray-50 active:scale-95 transition">
+                                <HomeIcon /> Back to Subject
+                            </button>
+                            <button onClick={() => startExam(activeExamId, false)} className="flex-1 bg-[#8a4fff] text-white border-none font-bold py-3 rounded-xl text-[14px] flex justify-center items-center gap-2 active:scale-95 transition">
+                                <RetryIcon /> Retry Exam
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
